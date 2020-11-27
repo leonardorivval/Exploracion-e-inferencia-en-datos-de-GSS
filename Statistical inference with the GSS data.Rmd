@@ -1,0 +1,115 @@
+---
+title: "Statistical inference with the GSS data"
+output: 
+  html_document: 
+    fig_height: 4
+    highlight: pygments
+    theme: spacelab
+---
+
+## Setup
+
+### Load packages
+
+```{r load-packages, message = FALSE}
+library(ggplot2)
+library(dplyr)
+library(statsr)
+```
+
+### Load data
+
+```{r load-data}
+load(file.choose())
+```
+
+* * *
+
+## Part 1: Data
+
+<ol>
+The data was collected by inperson interviews, however, a few interviews were be done by telephone in the event that an inperson contact cannot be scheduled.The sample was collected by a multiphase method, and consists of non-institutionalized adults of the United States who speak either English or Spanish. This puts some limitations to the data like excluding some minorities that may be in the United States but who don't speak English or Spanish. Another possible problem may be a lack of response from the participants. Also we may have some variations in the honesty of responses, since some of the persons were sampled by an interview and others by telephone (we know that those who feel more privacy tend to respond more sincerely than those who do not). Finally the results from our analysis can not be causal since this is an observational study, therefore the variables were not manipulate ad lib.
+</ol>
+* * *
+
+## Part 2: Research question
+<ol>
+I want to know if there is some relation between the educational level and the confidence persons have in medicine.
+
+H0: There is no relation between the educational level(degree) the confidence in medicine (conmedic)
+
+Ha: There is a relation between the educational level and the confidence in medicine
+
+This question is interesting because in this times of pandemic we have appreciated that a lot of persons seem not to believe in covid-19 and prefere to believe in some conspiratory stuff (e.g. the 5G as a tool for mind control, Bill Gates as the master mind behind the covid-19 pandemic, thermometers as devices that destroy neurons, and many others). Because of that I believe it would be interesting to know if confidence in medicine is related to educational level. So hold on, take your popcorn and let´s see what this data shows.
+</ol>
+
+* * *
+
+## Part 3: Exploratory data analysis
+ 
+```{r structure-of-data}
+str(gss$degree)
+str(gss$conmedic)
+```
+
+<ol>
+
+It is important to notice that in the specifications of the data we have the next labeling for our levels of the variables:
+
+conmedic
+<li>  NA	IAP
+<li>  1	A GREAT DEAL
+<li>  2	ONLY SOME
+<li>  3	HARDLY ANY
+<li>  NA	DK
+<li>  NA	NA
+
+degree
+<li>  0	LT HIGH SCHOOL
+<li>  1	HIGH SCHOOL
+<li>  2	JUNIOR COLLEGE
+<li>  3	BACHELOR
+<li>  4	GRADUATE
+<li>  NA	IAP
+<li>  NA	DK
+<li>  NA	NA
+
+Also as we can appreciate our data is categorical so our next action should be in line with this information
+</ol>
+
+```{r data-visialization}
+
+ggplot(data=gss, aes(x=degree)) +
+  geom_bar(fill= "light blue", color= "black")
+
+ggplot(data=gss, aes(x=conmedic)) +
+  geom_bar(fill= "light blue", color= "black")
+```
+<ol>
+Here we can begin to see the frequencies of our data, it seems that the majority of people has at least completed high school. And that a lot of the majority of people have confidence in medicine. Which is a good sign, but we would need to do some hypothesis test to be more sure.
+<ol>
+
+```{r data-visualization}
+ggplot(data=gss, aes(x=degree, fill=conmedic))+
+  stat_count()
+```
+<ol>
+
+When we appreciate a graphic that summarises both variables we can see that there seems to be reduction of "hardly any" as education is higher.
+</ol>
+
+* * *
+
+## Part 4: Inference
+
+NOTE: Insert code chunks as needed by clicking on the "Insert a new code chunk" 
+button (green button with orange arrow) above. Make sure that your code is visible
+in the project you submit. Delete this note when before you submit your work.
+```{r inference}
+inference(y=conmedic, x=degree, data=gss, type = "ht", statistic = "proportion", method = "theoretical", success = "a great deal")
+```
+<ol>
+
+As we can see our data have a X^2= 175.9112, with df= 8, at a significance level p=0. Which implies that there is enough evidence for rejecting the H0, therefore there is a relation between the educational level and the confidence in medicine. How exactly is the relation, we do not know since this is just an hypothesis test of chi-square, but at least we know that there is an actual relation between the two variables.
+
+</ol>
